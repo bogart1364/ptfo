@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zero to Web3 - Chapters</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Main Background */
+    main {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .chapters-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chapters-header {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeInDown 0.6s ease;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chapters-header h1 {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #667eea 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .chapters-header p {
+      font-size: 1.1rem;
+      color: #b0b8d4;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .chapters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+
+    .chapter-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chapter-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00d4ff 0%, #667eea 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .chapter-card:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2), 0 0 40px rgba(0, 212, 255, 0.1);
+      transform: translateY(-8px);
+    }
+
+    .chapter-card:hover::before {
+      opacity: 1;
+    }
+
+    .chapter-number {
+      font-size: 0.8rem;
+      color: #00d4ff;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: 0.9;
+    }
+
+    .chapter-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #ffffff;
+      line-height: 1.4;
+    }
+
+    .chapter-description {
+      font-size: 0.95rem;
+      color: #b0b8d4;
+      margin-bottom: 24px;
+      flex-grow: 1;
+      line-height: 1.6;
+    }
+
+    .chapter-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-view {
+      flex: 1;
+      padding: 13px 22px;
+      background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
+    }
+
+    .btn-view:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0, 212, 255, 0.3);
+    }
+
+    .btn-view.locked {
+      background: linear-gradient(135deg, #5a5a7a 0%, #3a3a5a 100%);
+      cursor: not-allowed;
+      box-shadow: 0 10px 25px rgba(90, 90, 122, 0.2);
+    }
+
+    .btn-view.locked:hover {
+      transform: none;
+      box-shadow: 0 10px 25px rgba(90, 90, 122, 0.2);
+    }
+
+    .locked-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 193, 7, 0.15);
+      color: #ffc107;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .locked-badge.unlocked {
+      background: rgba(76, 175, 80, 0.15);
+      color: #4caf50;
+      border-color: rgba(76, 175, 80, 0.3);
+    }
+
+    .lock-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+    }
+
+    .verification-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .verification-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: 20px;
+      padding: 50px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      margin-bottom: 30px;
+    }
+
+    .modal-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-icon svg {
+      width: 45px;
+      height: 45px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.8rem;
+      color: #ffffff;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .modal-header p {
+      color: #b0b8d4;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .btn-primary {
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0, 212, 255, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #b0b8d4;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .verification-checkbox {
+      margin: 25px 0;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .verification-checkbox label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #b0b8d4;
+      font-weight: 500;
+    }
+
+    .verification-checkbox input[type="checkbox"] {
+      margin-right: 12px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #00d4ff;
+    }
+
+    .twitter-link {
+      display: inline-block;
+      background: #1DA1F2;
+      color: white;
+      padding: 13px 28px;
+      border-radius: 24px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 15px 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(29, 161, 242, 0.2);
+    }
+
+    .twitter-link:hover {
+      background: #1a8cd8;
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(29, 161, 242, 0.3);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 28px;
+      cursor: pointer;
+      color: #b0b8d4;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      margin-bottom: 30px;
+    }
+
+    .breadcrumb a {
+      color: #00d4ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breadcrumb a:hover {
+      color: #0099ff;
+      transform: translateX(-3px);
+    }
+
+    @media (max-width: 768px) {
+      .chapters-header h1 {
+        font-size: 2.2rem;
+      }
+
+      .chapters-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .modal-content {
+        padding: 35px 25px;
+      }
+
+      .chapter-card {
+        padding: 24px;
+      }
+    }
+
+    .section {
+      padding: 60px 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Modal text styling */
+    .modal-text {
+      margin: 20px 0;
+      text-align: left;
+      color: #b0b8d4;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Header styling for dark theme */
+    .site-header {
+      background: rgba(26, 26, 46, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-header .logo {
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.5rem;
+    }
+
+    .site-header .main-nav a {
+      color: #b0b8d4;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      font-weight: 500;
+    }
+
+    .site-header .main-nav a:hover {
+      color: #00d4ff;
+    }
+
+    .site-header .menu-toggle {
+      background: none;
+      border: none;
+    }
+
+    .site-header .menu-toggle span {
+      background: #b0b8d4;
+    }
+
+    /* Footer styling for dark theme */
+    .site-footer {
+      background: linear-gradient(135deg, #0f1a2e 0%, #1a1a2e 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #b0b8d4;
+    }
+
+    .site-footer p {
+      color: #b0b8d4;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">Orin</a>
+      <button class="menu-toggle" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="main-nav">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#activities">Activities</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-top: 100px;">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">← Back to Portfolio</a>
+        </div>
+
+      <div class="chapters-container">
+          <div class="chapters-header">
+            <h1>Zero to Web3</h1>
+            <p>Master Crypto Twitter and Web3 from scratch. 7 comprehensive chapters covering everything from account creation to Web3 projects.</p>
+          </div>
+
+          <div class="chapters-grid" id="chaptersGrid">
+            <!-- Chapters will be inserted here by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Verification Modal -->
+  <div class="verification-modal" id="verificationModal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()">&times;</button>
+      <div class="modal-header">
+        <div class="modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h2>Unlock This Chapter</h2>
+        <p id="chapterName"></p>
+      </div>
+
+      <div class="modal-text">
+        <p>To access this exclusive chapter, please follow my X account first. This helps me grow the community and share more valuable Web3 content!</p>
+      </div>
+
+      <a href="https://x.com/OrinBase" target="_blank" rel="noopener" class="twitter-link">
+        👉 Follow @OrinBase on X
+      </a>
+
+      <div class="verification-checkbox">
+        <label>
+          <input type="checkbox" id="verifyCheckbox" />
+          I've followed @OrinBase on X
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" id="unlockBtn" onclick="unlockChapter()" disabled>
+          Unlock & Download
+        </button>
+        <button class="btn-secondary" onclick="closeModal()">Not Now</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Orin. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    const chapters = [
+      {
+        id: 1,
+        title: "Creating Gmail and an X Account",
+        description: "Learn how to set up your Gmail account and create a professional X (Twitter) profile to start your Web3 journey.",
+        file: "chapters/Chapter_1_Creating_Gmail_and_X_Account.pdf"
+      },
+      {
+        id: 2,
+        title: "Entering the World of Crypto Twitter",
+        description: "Navigate the crypto Twitter ecosystem, understand the culture, and connect with the Web3 community.",
+        file: "chapters/Chapter_2_Entering_Crypto_Twitter.pdf"
+      },
+      {
+        id: 3,
+        title: "Content Creation with GPT",
+        description: "Master AI-powered content creation using GPT to write engaging threads and posts for your audience.",
+        file: "chapters/Chapter_3_Content_Creation_with_GPT.pdf"
+      },
+      {
+        id: 4,
+        title: "Engagement and Network",
+        description: "Build meaningful relationships, engage with the community, and expand your professional network in Web3.",
+        file: "chapters/Chapter_4_Engagement_and_Network.pdf"
+      },
+      {
+        id: 5,
+        title: "Account Growth",
+        description: "Strategies to grow your X account, increase followers, and establish yourself as a thought leader.",
+        file: "chapters/Chapter_5_Account_Growth.pdf"
+      },
+      {
+        id: 6,
+        title: "Security and Asset",
+        description: "Learn critical security practices to protect your accounts, assets, and maintain safety in the crypto space.",
+        file: "chapters/Chapter_6_Security_and_Asset.pdf"
+      },
+      {
+        id: 7,
+        title: "The World of Web3 Projects",
+        description: "Explore different Web3 projects, understand blockchain technology, and discover opportunities in the ecosystem.",
+        file: "chapters/Chapter_7_Web3_Projects.pdf"
+      }
+    ];
+
+    let selectedChapter = null;
+
+    function initChapters() {
+      const grid = document.getElementById('chaptersGrid');
+      grid.innerHTML = chapters.map(chapter => {
+        const isUnlocked = isChapterUnlocked(chapter.id);
+        const lockIcon = `<svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+        const unlockIcon = `<svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.2 1M15 7v4"></path></svg>`;
+        return `
+          <div class="chapter-card">
+            <span class="locked-badge ${isUnlocked ? 'unlocked' : ''}">
+              ${lockIcon}
+              ${isUnlocked ? '✓ Unlocked' : 'Locked'}
+            </span>
+            <div class="chapter-number">Chapter ${chapter.id}</div>
+            <h3 class="chapter-title">${chapter.title}</h3>
+            <p class="chapter-description">${chapter.description}</p>
+            <div class="chapter-actions">
+              <button class="btn-view ${!isUnlocked ? 'locked' : ''}" onclick="handleChapterAction(${chapter.id}, '${chapter.file}')">
+                ${isUnlocked ? '⬇️ Download' : '🔓 Unlock'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleChapterAction(chapterId, filePath) {
+      if (isChapterUnlocked(chapterId)) {
+        // Download the chapter
+        downloadFile(filePath, `Chapter_${chapterId}.pdf`);
+      } else {
+        // Show verification modal
+        selectedChapter = chapterId;
+        const chapter = chapters.find(c => c.id === chapterId);
+        document.getElementById('chapterName').textContent = `Chapter ${chapterId}: ${chapter.title}`;
+        document.getElementById('verificationModal').classList.add('active');
+        document.getElementById('verifyCheckbox').checked = false;
+        updateUnlockButton();
+      }
+    }
+
+    function isChapterUnlocked(chapterId) {
+      const unlockedChapters = JSON.parse(localStorage.getItem('unlockedChapters') || '[]');
+      return unlockedChapters.includes(chapterId);
+    }
+
+    document.getElementById('verifyCheckbox')?.addEventListener('change', updateUnlockButton);
+
+    function updateUnlockButton() {
+      const checkbox = document.getElementById('verifyCheckbox');
+      const btn = document.getElementById('unlockBtn');
+      btn.disabled = !checkbox.checked;
+    }
+
+    function unlockChapter() {
+      if (selectedChapter) {
+        const unlockedChapters = JSON.parse(localStorage.getItem('unlockedChapters') || '[]');
+        if (!unlockedChapters.includes(selectedChapter)) {
+          unlockedChapters.push(selectedChapter);
+          localStorage.setItem('unlockedChapters', JSON.stringify(unlockedChapters));
+        }
+        closeModal();
+        initChapters();
+
+        // Download the chapter
+        const chapter = chapters.find(c => c.id === selectedChapter);
+        setTimeout(() => {
+          downloadFile(chapter.file, `Chapter_${selectedChapter}.pdf`);
+        }, 300);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('verificationModal').classList.remove('active');
+      selectedChapter = null;
+    }
+
+    function downloadFile(filePath, fileName) {
+      const link = document.createElement('a');
+      link.href = filePath;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('verificationModal')?.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Initialize chapters on page load
+    document.addEventListener('DOMContentLoaded', initChapters);
+  </script>
+</body>
+</html>
